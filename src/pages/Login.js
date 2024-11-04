@@ -1,14 +1,39 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
+import api from '../api'; // Asegúrate de tener el archivo api.js configurado
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
+  const [error, setError] = useState(null); // Estado para manejar errores
+  const navigate = useNavigate(); // Hook de React Router para redireccionar
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Iniciando sesión con:', { email, password, remember });
+    setError(null); // Resetear el mensaje de error
+
+    try {
+      // Llamada a la API para autenticación
+      const response = await api.post('/login', { email, password });
+      const { token } = response.data;
+
+      // Guarda el token en localStorage o sessionStorage según la preferencia del usuario
+      if (remember) {
+        localStorage.setItem('token', token);
+      } else {
+        sessionStorage.setItem('token', token);
+      }
+
+      console.log('Usuario autenticado:', response.data);
+
+      // Redirige al usuario a la página de inicio o a otra página
+      navigate('/');
+    } catch (error) {
+      console.error('Error al iniciar sesión:', error.response?.data || error.message);
+      setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
+    }
   };
 
   return (
@@ -22,6 +47,7 @@ export default function Login() {
           />
         </div>
         <form onSubmit={handleSubmit}>
+          {error && <p className="text-red-500 mb-4">{error}</p>}
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-600 mb-1">Email</label>
             <input
