@@ -19,7 +19,7 @@ export default function Login() {
       const response = await api.post('/login', { email, password });
       const { token } = response.data;
 
-      // Guarda el token en localStorage o sessionStorage según la preferencia del usuario
+      // Guarda el token en localStorage o sessionStorage
       if (remember) {
         localStorage.setItem('token', token);
       } else {
@@ -40,11 +40,13 @@ export default function Login() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex justify-center mb-6">
-          <img
-            alt="profile-placeholder"
-            src="https://openui.fly.dev/openui/100x100.svg?text=📷"
-            className="rounded-full border-2 border-gray-300"
+        <img
+          alt="profile-placeholder"
+          src="/images/usuario.svg"
+          className="w-24 h-24 mx-auto my-4 rounded-full border-2 border-gray-300 shadow-lg"
           />
+
+
         </div>
         <form onSubmit={handleSubmit}>
           {error && <p className="text-red-500 mb-4">{error}</p>}
